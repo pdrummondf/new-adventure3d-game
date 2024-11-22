@@ -11,6 +11,8 @@ public class PlayerAbilityShoot : PlayerAbilityBase
 
     private GunBase _currentGun;
 
+    [SerializeField] private List<GunBase> _gunList = new List<GunBase>();
+
     protected override void Init()
     {
         base.Init();
@@ -19,12 +21,21 @@ public class PlayerAbilityShoot : PlayerAbilityBase
 
         inputs.Gameplay.Shoot.performed += ctx => StartShoot();
         inputs.Gameplay.Shoot.canceled += ctx => CancelShoot();
+
+        inputs.Gameplay.Weapon1.performed += x => SwapWeapon1();
+        inputs.Gameplay.Weapon2.performed += x => SwapWeapon2();
     }
 
     private void CreateGun()
     {
         _currentGun = Instantiate(gunBase, gunPosition);
 
+        _currentGun.transform.localPosition = _currentGun.transform.localEulerAngles = Vector3.zero;
+    }
+
+    void CreateGun(GunBase gun)
+    {
+        _currentGun = Instantiate(gun, gunPosition);
         _currentGun.transform.localPosition = _currentGun.transform.localEulerAngles = Vector3.zero;
     }
 
@@ -38,5 +49,14 @@ public class PlayerAbilityShoot : PlayerAbilityBase
     {
         _currentGun.StartShoot(); 
         Debug.Log("Start Shoot!");
+    }
+
+    void SwapWeapon1()
+    {
+        CreateGun(_gunList[0]);
+    }
+    void SwapWeapon2()
+    {
+        CreateGun(_gunList[1]);
     }
 }
